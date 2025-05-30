@@ -2,6 +2,7 @@ package uzonna.JobTracker.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity // How we tell Spring this class should map to a DB table
 public class JobApplication {
@@ -16,14 +17,18 @@ public class JobApplication {
 
     private LocalDate applicationDate;
 
+    @ElementCollection
+    private List<String> tags;
+
     // Constructors (required for JPA)
     public JobApplication() {}
 
-    public JobApplication(String jobTitle, String company, String status, LocalDate applicationDate) {
+    public JobApplication(String jobTitle, String company, String status, LocalDate applicationDate, List<String> tags) {
         this.jobTitle = jobTitle;
         this.company = company;
         this.status = status;
         this.applicationDate = applicationDate;
+        this.tags = tags;
     }
 
     // Getters and setters (required for Spring to access fields)
@@ -40,4 +45,7 @@ public class JobApplication {
 
     public LocalDate getApplicationDate() { return applicationDate; }
     public void setApplicationDate(LocalDate applicationDate) { this.applicationDate = applicationDate; }
+
+    public List<String> getTags() {return tags;}
+    public void setTag(String tag) {this.tags.add(tag);}
 }

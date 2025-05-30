@@ -26,8 +26,16 @@ public class JobApplicationController {
 
     // READ: Get all job applications
     @GetMapping
-    public List<JobApplication> getAllApplications() {
-        return repository.findAll();
+    public List<JobApplication> getApplications(
+        @RequestParam(required = false) String company,
+        @RequestParam(required = false) String status,
+        @RequestParam(required = false) String tag
+    ) {
+        if (company == null && status == null && tag == null) {
+            return repository.findAll();
+        } else {
+            return repository.findByFilters(company, status, tag);
+        }
     }
 
     // READ: Get one job application by ID
@@ -59,4 +67,19 @@ public class JobApplicationController {
     public void deleteApplication(@PathVariable Long id) {
         repository.deleteById(id);
     }
+
+    // @GetMapping
+    // public List<JobApplication> getApplications(
+    //     @RequestParam(required = false) String company,
+    //     @RequestParam(required = false) String status,
+    //     @RequestParam(required = false) String tag
+    // ) {
+    //     if (company != null || status != null || tag != null) {
+    //         return repository.findByFilters(company, status, tag);
+    //     }
+    //     return repository.findAll();
+    // }
+
+
+    
 }
