@@ -54,6 +54,7 @@ public class JobApplicationController {
                     existingApp.setCompany(updatedApp.getCompany());
                     existingApp.setStatus(updatedApp.getStatus());
                     existingApp.setApplicationDate(updatedApp.getApplicationDate());
+                    existingApp.setTags(updatedApp.getTags());
                     return repository.save(existingApp);
                 })
                 .orElseGet(() -> {

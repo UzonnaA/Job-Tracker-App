@@ -48,4 +48,5 @@ public class JobApplication {
 
     public List<String> getTags() {return tags;}
     public void setTag(String tag) {this.tags.add(tag);}
+    public void setTags(List<String> tags){this.tags = tags;}
 }
