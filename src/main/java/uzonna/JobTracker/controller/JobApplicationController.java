@@ -69,17 +69,6 @@ public class JobApplicationController {
         repository.deleteById(id);
     }
 
-    // @GetMapping
-    // public List<JobApplication> getApplications(
-    //     @RequestParam(required = false) String company,
-    //     @RequestParam(required = false) String status,
-    //     @RequestParam(required = false) String tag
-    // ) {
-    //     if (company != null || status != null || tag != null) {
-    //         return repository.findByFilters(company, status, tag);
-    //     }
-    //     return repository.findAll();
-    // }
 
 
     
