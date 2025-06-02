@@ -7,24 +7,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@RestController // Tells Spring this class handles API requests
-@RequestMapping("/api/applications") // All routes will start with this
+@RestController
+@RequestMapping("/api/applications")
 public class JobApplicationController {
 
     private final JobApplicationRepository repository;
 
-    // Constructor injection (Spring will provide the repository automatically)
     public JobApplicationController(JobApplicationRepository repository) {
         this.repository = repository;
     }
 
-    // CREATE: Add a new job application
+    // Create a new job application
     @PostMapping
     public JobApplication createApplication(@RequestBody JobApplication application) {
         return repository.save(application);
     }
 
-    // READ: Get all job applications
+    // Get all applications, or filter by company, status, or tag if provided
     @GetMapping
     public List<JobApplication> getApplications(
         @RequestParam(required = false) String company,
@@ -38,38 +37,33 @@ public class JobApplicationController {
         }
     }
 
-    // READ: Get one job application by ID
+    // Get a specific application by ID
     @GetMapping("/{id}")
     public Optional<JobApplication> getApplicationById(@PathVariable Long id) {
         return repository.findById(id);
     }
 
-    // UPDATE: Edit an existing application
+    // Update an existing application, or create it if it doesn’t exist
     @PutMapping("/{id}")
     public JobApplication updateApplication(@PathVariable Long id, @RequestBody JobApplication updatedApp) {
         return repository.findById(id)
-        // lambda function, take the "existingApp" or whatever name and map each of the parts
-                .map(existingApp -> {
-                    existingApp.setJobTitle(updatedApp.getJobTitle());
-                    existingApp.setCompany(updatedApp.getCompany());
-                    existingApp.setStatus(updatedApp.getStatus());
-                    existingApp.setApplicationDate(updatedApp.getApplicationDate());
-                    existingApp.setTags(updatedApp.getTags());
-                    return repository.save(existingApp);
-                })
-                .orElseGet(() -> {
-                    updatedApp.setId(id);
-                    return repository.save(updatedApp);
-                });
+            .map(existingApp -> {
+                existingApp.setJobTitle(updatedApp.getJobTitle());
+                existingApp.setCompany(updatedApp.getCompany());
+                existingApp.setStatus(updatedApp.getStatus());
+                existingApp.setApplicationDate(updatedApp.getApplicationDate());
+                existingApp.setTags(updatedApp.getTags());
+                return repository.save(existingApp);
+            })
+            .orElseGet(() -> {
+                updatedApp.setId(id);
+                return repository.save(updatedApp);
+            });
     }
 
-    // DELETE: Remove a job application
+    // Delete an application by ID
     @DeleteMapping("/{id}")
     public void deleteApplication(@PathVariable Long id) {
         repository.deleteById(id);
     }
-
-
-
-    
 }
