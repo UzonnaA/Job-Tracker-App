@@ -1,28 +1,22 @@
 package uzonna.JobTracker.config;
 
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- * Configuration class to enable Cross-Origin Resource Sharing (CORS) for the application.
- * This allows the frontend (like React running on localhost:3000) to interact with the backend.
- */
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
-    /**
-     * Defines CORS mappings for the entire application.
-     * Allows requests from the specified origin (localhost:3000) with standard HTTP methods.
-     *
-     * @param registry the CorsRegistry used to register CORS configuration
-     */
+    @Value("${app.cors.allowed-origin}")
+    private String allowedOrigin;
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**") // Apply CORS settings to all endpoints
-                .allowedOrigins("http://localhost:3000") // Allow frontend on port 3000
-                .allowedMethods("GET", "POST", "PUT", "DELETE") // Enable standard REST operations
-                .allowedHeaders("*"); // Allow all headers
+        registry.addMapping("/**")
+                .allowedOrigins(allowedOrigin)
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*");
     }
 }
 
