@@ -20,7 +20,11 @@ public class JobApplication {
     @ElementCollection
     private List<String> tags;
 
-    // Constructors (required for JPA)
+    @ManyToOne
+   @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    
     public JobApplication() {}
 
     public JobApplication(String jobTitle, String company, String status, LocalDate applicationDate, List<String> tags) {
@@ -31,7 +35,6 @@ public class JobApplication {
         this.tags = tags;
     }
 
-    // Getters and setters (required for Spring to access fields)
     public Long getId() { return id; }
     public void setId(Long id) {this.id = id;} // idk if I should do this one, meh
     public String getJobTitle() { return jobTitle; }
@@ -49,4 +52,7 @@ public class JobApplication {
     public List<String> getTags() {return tags;}
     public void setTag(String tag) {this.tags.add(tag);}
     public void setTags(List<String> tags){this.tags = tags;}
+
+    public User getUser() {return user;}
+    public void setUser(User user) {this.user = user;}
 }
