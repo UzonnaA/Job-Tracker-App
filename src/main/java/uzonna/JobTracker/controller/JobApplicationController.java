@@ -68,8 +68,9 @@ public class JobApplicationController {
     public ResponseEntity<JobApplication> updateApplication(
             @PathVariable Long id,
             @RequestBody JobApplication updatedApp,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
+        User user = userDetails.getUser();
         Optional<JobApplication> existingOpt = repository.findById(id);
 
         if (existingOpt.isEmpty() || !existingOpt.get().getUser().getId().equals(user.getId())) {
@@ -90,15 +91,15 @@ public class JobApplicationController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteApplication(
             @PathVariable Long id,
-            @AuthenticationPrincipal User user) {
-
-        Optional<JobApplication> app = repository.findById(id);
-        if (app.isEmpty() || !app.get().getUser().getId().equals(user.getId())) {
-            return ResponseEntity.status(403).build();
-        }
-
-        repository.deleteById(id);
-        return ResponseEntity.ok().build();
-    }
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                
+                User user = userDetails.getUser();
+                Optional<JobApplication> app = repository.findById(id);
+                if (app.isEmpty() || !app.get().getUser().getId().equals(user.getId())) {
+                    return ResponseEntity.status(403).build();
+                }
+                repository.deleteById(id);
+                return ResponseEntity.ok().build();
+            }
 
 }

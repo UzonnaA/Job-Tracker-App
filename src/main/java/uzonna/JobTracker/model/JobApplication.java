@@ -3,6 +3,7 @@ package uzonna.JobTracker.model;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity // How we tell Spring this class should map to a DB table
 public class JobApplication {
@@ -21,7 +22,8 @@ public class JobApplication {
     private List<String> tags;
 
     @ManyToOne
-   @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     
