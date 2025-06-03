@@ -12,6 +12,9 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication, 
     // Get all applications for a specific user
     List<JobApplication> findByUser(User user);
 
+    // We love automatic functions
+    void deleteByUser(User user);
+
     // Get filtered applications belonging to a specific user
     @Query("SELECT j FROM JobApplication j WHERE j.user = :user AND " +
            "(:company IS NULL OR j.company = :company) AND " +

@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @RestController
 @RequestMapping("/api/applications")
 public class JobApplicationController {
@@ -88,6 +90,14 @@ public class JobApplicationController {
         existingApp.setTags(updatedApp.getTags());
 
         return ResponseEntity.ok(repository.save(existingApp));
+    }
+
+    @DeleteMapping
+    @Transactional
+    public ResponseEntity<?> deleteAllApplications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
+        repository.deleteByUser(user);
+        return ResponseEntity.ok("All applications deleted.");
     }
 
     
