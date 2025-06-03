@@ -9,8 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
@@ -101,5 +104,29 @@ public class JobApplicationController {
                 repository.deleteById(id);
                 return ResponseEntity.ok().build();
             }
+
+    @GetMapping("/stats")
+    public Map<String, Object> getStats(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
+        List<JobApplication> apps = repository.findByUser(user);
+
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("total", apps.size());
+
+        Map<String, Long> statusCounts = apps.stream()
+            .collect(Collectors.groupingBy(JobApplication::getStatus, Collectors.counting()));
+        stats.put("byStatus", statusCounts);
+
+        Map<String, Long> companyCounts = apps.stream()
+            .collect(Collectors.groupingBy(JobApplication::getCompany, Collectors.counting()));
+        stats.put("byCompany", companyCounts);
+
+        Map<String, Long> tagCounts = apps.stream()
+            .flatMap(app -> app.getTags().stream())
+            .collect(Collectors.groupingBy(tag -> tag, Collectors.counting()));
+        stats.put("byTag", tagCounts);
+
+        return stats;
+    }
 
 }
