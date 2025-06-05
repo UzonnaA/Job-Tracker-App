@@ -53,7 +53,8 @@ class JobApplicationControllerTest {
 
         userDetails = new UserDetailsImpl(user);
         SecurityContext context = SecurityContextHolder.createEmptyContext();
-        context.setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
+        context.setAuthentication(
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
         SecurityContextHolder.setContext(context);
     }
 
