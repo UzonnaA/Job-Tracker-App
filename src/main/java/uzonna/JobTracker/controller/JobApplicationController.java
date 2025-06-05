@@ -29,34 +29,31 @@ public class JobApplicationController {
         this.repository = repository;
     }
 
-    
     @PostMapping
     public ResponseEntity<JobApplication> createApplication(
-        @RequestBody JobApplication application,
-        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+            @RequestBody JobApplication application,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         User user = userDetails.getUser();
         application.setUser(user);
         return ResponseEntity.ok(repository.save(application));
     }
 
-    
     @GetMapping
     public List<JobApplication> getApplications(
             @RequestParam(required = false) String company,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String tag,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-                
-                User user = userDetails.getUser();
-                if (company == null && status == null && tag == null) {
-                    return repository.findByUser(user);
-                } else {
-                    return repository.findByUserAndFilters(user, company, status, tag);
-                }
-            }
 
-    
+        User user = userDetails.getUser();
+        if (company == null && status == null && tag == null) {
+            return repository.findByUser(user);
+        } else {
+            return repository.findByUserAndFilters(user, company, status, tag);
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<JobApplication> getApplicationById(
             @PathVariable Long id,
@@ -68,7 +65,6 @@ public class JobApplicationController {
                 : ResponseEntity.status(403).build();
     }
 
-    
     @PutMapping("/{id}")
     public ResponseEntity<JobApplication> updateApplication(
             @PathVariable Long id,
@@ -100,20 +96,19 @@ public class JobApplicationController {
         return ResponseEntity.ok("All applications deleted.");
     }
 
-    
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteApplication(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-                
-                User user = userDetails.getUser();
-                Optional<JobApplication> app = repository.findById(id);
-                if (app.isEmpty() || !app.get().getUser().getId().equals(user.getId())) {
-                    return ResponseEntity.status(403).build();
-                }
-                repository.deleteById(id);
-                return ResponseEntity.ok().build();
-            }
+
+        User user = userDetails.getUser();
+        Optional<JobApplication> app = repository.findById(id);
+        if (app.isEmpty() || !app.get().getUser().getId().equals(user.getId())) {
+            return ResponseEntity.status(403).build();
+        }
+        repository.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping("/stats")
     public Map<String, Object> getStats(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -124,16 +119,16 @@ public class JobApplicationController {
         stats.put("total", apps.size());
 
         Map<String, Long> statusCounts = apps.stream()
-            .collect(Collectors.groupingBy(JobApplication::getStatus, Collectors.counting()));
+                .collect(Collectors.groupingBy(JobApplication::getStatus, Collectors.counting()));
         stats.put("byStatus", statusCounts);
 
         Map<String, Long> companyCounts = apps.stream()
-            .collect(Collectors.groupingBy(JobApplication::getCompany, Collectors.counting()));
+                .collect(Collectors.groupingBy(JobApplication::getCompany, Collectors.counting()));
         stats.put("byCompany", companyCounts);
 
         Map<String, Long> tagCounts = apps.stream()
-            .flatMap(app -> app.getTags().stream())
-            .collect(Collectors.groupingBy(tag -> tag, Collectors.counting()));
+                .flatMap(app -> app.getTags().stream())
+                .collect(Collectors.groupingBy(tag -> tag, Collectors.counting()));
         stats.put("byTag", tagCounts);
 
         return stats;

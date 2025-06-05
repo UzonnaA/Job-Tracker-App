@@ -38,7 +38,7 @@ public class JobApplication {
     }
 
     public Long getId() { return id; }
-    public void setId(Long id) {this.id = id;} // idk if I should do this one, meh
+    public void setId(Long id) {this.id = id;} // I need this one for tests, actually
     public String getJobTitle() { return jobTitle; }
     public void setJobTitle(String jobTitle) { this.jobTitle = jobTitle; }
 
